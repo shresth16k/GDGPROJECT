@@ -1,69 +1,53 @@
-import Image from "next/image";
+import { getDb } from '@/lib/db';
+import PublicHeader from '@/components/public/PublicHeader';
+import HeroSection from '@/components/public/HeroSection';
+import RegistrationSection from '@/components/public/RegistrationSection';
+import PublicFooter from '@/components/public/PublicFooter';
+import { EventSettings } from '@/types';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+async function getEventSettings(): Promise<EventSettings | null> {
+  try {
+    const db = getDb();
+    const result = await db.execute('SELECT * FROM event_settings WHERE id = 1');
+    if (result.rows.length === 0) return null;
+    const row = result.rows[0];
+    return {
+      id: Number(row.id),
+      event_name: String(row.event_name || 'GDG DevFest UPES 2026'),
+      event_description: row.event_description ? String(row.event_description) : undefined,
+      event_date: row.event_date ? String(row.event_date) : undefined,
+      event_time: row.event_time ? String(row.event_time) : undefined,
+      event_venue: row.event_venue ? String(row.event_venue) : undefined,
+      campus_name: row.campus_name ? String(row.campus_name) : 'UPES Dehradun',
+      university_name: row.university_name ? String(row.university_name) : 'University of Petroleum and Energy Studies',
+      gdg_logo_url: row.gdg_logo_url ? String(row.gdg_logo_url) : undefined,
+      upes_logo_url: row.upes_logo_url ? String(row.upes_logo_url) : undefined,
+      registration_status: (row.registration_status as 'open' | 'closed' | 'pending') || 'open',
+      registration_limit: row.registration_limit ? Number(row.registration_limit) : undefined,
+      primary_contact_email: row.primary_contact_email ? String(row.primary_contact_email) : undefined,
+      custom_fields_json: row.custom_fields_json ? String(row.custom_fields_json) : '[]',
+      show_registration_count: Boolean(row.show_registration_count),
+      registration_success_message: row.registration_success_message ? String(row.registration_success_message) : undefined,
+      created_at: String(row.created_at),
+      updated_at: String(row.updated_at),
+    };
+  } catch (error) {
+    console.error('Failed to load event settings:', error);
+    return null;
+  }
+}
+
+export default async function HomePage() {
+  const settings = await getEventSettings();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen bg-[#F4EFE7] text-[#21172E] selection:bg-[#E8755D] selection:text-white">
+      <PublicHeader settings={settings} />
+      <HeroSection settings={settings} />
+      <RegistrationSection settings={settings} />
+      <PublicFooter settings={settings} />
+    </main>
   );
 }
