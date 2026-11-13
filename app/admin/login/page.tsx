@@ -25,17 +25,24 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ password }),
       });
 
-      const data = await res.json();
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        // Fallback if not valid JSON
+        data = null;
+      }
 
       if (!res.ok) {
-        setError(data.error || 'Authentication failed. Please verify credentials.');
+        setError(data?.error || `Authentication failed (${res.status}). Please verify credentials.`);
         setIsLoading(false);
         return;
       }
 
       router.push('/admin');
       router.refresh();
-    } catch {
+    } catch (err: any) {
+      console.error('Login error:', err);
       setError('An error occurred during authentication. Please retry.');
       setIsLoading(false);
     }
