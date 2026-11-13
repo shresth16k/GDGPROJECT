@@ -12,33 +12,33 @@ export default function PublicHeader({ settings }: Props) {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-[#E6DFD6]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        {/* Logos container */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          <div className="flex items-center gap-2 sm:gap-3">
+        {/* Logos container — shrink on mobile */}
+        <div className="flex items-center gap-2 sm:gap-5 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
             <div
               className="relative flex-shrink-0"
-              style={{ position: 'relative', width: '110px', height: '38px', maxWidth: '110px', maxHeight: '38px' }}
+              style={{ position: 'relative', width: '80px', height: '28px' }}
             >
               <Image
                 src={settings?.upes_logo_url || '/logos/upes-logo.png'}
                 alt="UPES"
                 fill
                 style={{ objectFit: 'contain', objectPosition: 'left' }}
-                sizes="110px"
+                sizes="80px"
                 priority
               />
             </div>
-            <span className="text-[#E6DFD6] font-light text-xl select-none">×</span>
+            <span className="text-[#E6DFD6] font-light text-base select-none">×</span>
             <div
               className="relative flex-shrink-0"
-              style={{ position: 'relative', width: '100px', height: '36px', maxWidth: '100px', maxHeight: '36px' }}
+              style={{ position: 'relative', width: '70px', height: '26px' }}
             >
               <Image
                 src={settings?.gdg_logo_url || '/logos/gdg-logo.png'}
                 alt="GDG"
                 fill
                 style={{ objectFit: 'contain', objectPosition: 'left' }}
-                sizes="100px"
+                sizes="70px"
                 priority
               />
             </div>
@@ -49,18 +49,20 @@ export default function PublicHeader({ settings }: Props) {
           </span>
         </div>
 
-        {/* Status & CTA */}
-        <div className="flex items-center gap-3">
+        {/* Status badge — always visible, compact on mobile */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {regStatus === 'open' && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-[#4F9990] bg-[#4F9990]/10 px-3 py-1.5 rounded-full">
-              <span className="w-1.5 h-1.5 bg-[#4F9990] rounded-full animate-pulse" />
-              Registrations Open
+            <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-display font-semibold text-[#4F9990] bg-[#4F9990]/10 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full whitespace-nowrap">
+              <span className="w-1.5 h-1.5 bg-[#4F9990] rounded-full animate-pulse flex-shrink-0" />
+              <span className="sm:hidden">Open</span>
+              <span className="hidden sm:inline">Registrations Open</span>
             </span>
           )}
           {regStatus === 'closed' && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-[#857F89] bg-[#857F89]/10 px-3 py-1.5 rounded-full">
-              <span className="w-1.5 h-1.5 bg-[#857F89] rounded-full" />
-              Registrations Closed
+            <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-display font-semibold text-[#857F89] bg-[#857F89]/10 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full whitespace-nowrap">
+              <span className="w-1.5 h-1.5 bg-[#857F89] rounded-full flex-shrink-0" />
+              <span className="sm:hidden">Closed</span>
+              <span className="hidden sm:inline">Registrations Closed</span>
             </span>
           )}
           <a
