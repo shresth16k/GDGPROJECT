@@ -6,6 +6,7 @@ import PublicFooter from '@/components/public/PublicFooter';
 import { EventSettings } from '@/types';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 async function getEventSettings(): Promise<EventSettings | null> {
   try {
